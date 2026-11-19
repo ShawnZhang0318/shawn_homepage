@@ -1,0 +1,33 @@
+{
+  "status": "content prepared only; no interaction implemented",
+  "source": "work\\build_cv_pdfs.py",
+  "companies": [
+    {
+      "id": "infiforce",
+      "display_name": "原力无限 INFIFORCE",
+      "title": "原力无限（INFIFORCE）深圳研究院",
+      "location": "深圳",
+      "role": "研究助理",
+      "dates": "2026.05 - 2026.08",
+      "bullets": [
+        "基于 CaP-X 的 Code-as-Policy 流程，将自然语言任务转为调用机器人感知与控制接口的可执行动作代码，参与动作函数调用、真机执行及反馈链路搭建。",
+        "面向人形机器人开发可组合动作能力；例如接收“帮我开灯”后，自主导航至开关位置并完成按压操作。"
+      ]
+    },
+    {
+      "id": "agentic-intelligence-lab",
+      "display_name": "Agentic Intelligence Lab",
+      "title": "香港大学 Agentic Intelligence Lab",
+      "location": "香港",
+      "role": "核心研究实习生",
+      "dates": "2026.05 - 2026.08",
+      "bullets": [
+        "围绕 VLA 与世界模型开展具身智能研究，关注视觉和语言输入到机器人动作生成，以及动作条件下的未来状态预测如何支持任务规划与真机系统集成。"
+      ]
+    }
+  ],
+  "education_interactive": false,
+  "projects": [],
+  "projects_note": "Existing 05/06/07 remain blank pending user selection; do not invent entries",
+  "tape_effects_in_scope": false
+}

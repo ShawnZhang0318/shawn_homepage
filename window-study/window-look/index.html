@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<base href="../">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>上海滨江 · 窗边看江</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="style.css">
+<script type="importmap">{"imports":{"three":"./vendor/three/build/three.module.js","three/addons/":"./vendor/three/examples/jsm/"}}</script>
+<main id="stage" aria-label="现有房间中的 Work 纸张"><canvas id="scene" tabindex="0" aria-label="按住拖动转头，滚轮调整远近，点击电脑、窗边或书柜靠近；点击 Work 纸张拿起；方向键切换公司，Enter 查看，Esc 放下或返回原视角"></canvas></main>
+<div class="heading"><span>THE STUDY</span><small>窗边看江 · <a href="window-look/closer/">近岸新版</a> · <a href="./">对照原版</a></small></div>
+<nav class="view-controls" aria-label="房间视角和灯光"><button id="ceiling-light" aria-pressed="true" disabled>顶灯开</button><select id="views" aria-label="靠近查看" disabled><option value="">原视角</option></select><button id="reset-view" disabled>返回原视角</button></nav>
+<div id="window-step" hidden><button id="step-left" aria-label="沿窗向左移动">← 左移</button><button id="step-right" aria-label="沿窗向右移动">右移 →</button></div>
+<div id="loading" role="status">正在载入现有房间与手写字体…</div>
+<div class="controls"><p id="hint">按住拖动转头 · 滚轮远近 · 点击电脑、窗边或书柜靠近</p><button id="pickup" disabled>拿起 Work 纸张</button><button id="putdown" hidden>放下纸张 <kbd>Esc</kbd></button></div>
+<div id="accessible" class="sr-only" aria-live="polite"></div>
+<nav id="keyboard-items" class="sr-only" aria-label="纸上事项" hidden></nav>
+<script type="module" src="main.js?v=window-look-1"></script>
+</html>

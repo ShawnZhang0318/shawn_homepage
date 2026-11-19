@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
+<title>隔江望陆家嘴 · 窗景样片</title>
+<style>
+  * { box-sizing: border-box }
+  body { margin: auto; max-width: 1000px; padding: 32px clamp(16px, 4vw, 48px) 48px; background: #171918; color: #eee8dc; font: 16px/1.65 system-ui, sans-serif }
+  h1, h2, p { margin: 0 0 10px }
+  h1 { font-size: clamp(24px, 4vw, 36px) }
+  h2 { font-size: 20px; margin-top: 30px }
+  a { color: #e2c490; text-underline-offset: 3px }
+  video, img { display: block; width: 100%; height: auto; border-radius: 5px }
+  section { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 270px), 1fr)); gap: 16px; margin-top: 16px }
+  figure { margin: 0 }
+  figcaption { margin-top: 4px }
+</style>
+<main>
+  <h1>隔江望陆家嘴</h1>
+  <p><a href="./?view=window">到窗边看夜景</a>　·　<a href="./">从房间主景进入</a></p>
+  <h2 id="route">走近窗边，再转头看江岸</h2>
+  <p>沿着主景原有的观察方向走近窗边，再原地看向两侧、沿窗横移，最后返回。注意近处窗棂掠过远处楼体的速度。全程使用同一镜头、同一套窗外模型。</p>
+  <video controls playsinline preload="metadata" width="1280" height="720" poster="views/home.png?v=facades4" aria-labelledby="route">
+    <source src="views/window-walk.mp4?v=facades4" type="video/mp4">
+  </video>
+  <section aria-label="原尺寸静帧">
+    <figure><a href="views/home.png?v=facades4"><img src="views/home.png?v=facades4" width="1280" height="720" alt="从书桌主景望向窗外"></a><figcaption>默认主景</figcaption></figure>
+    <figure><a href="views/focus.png?v=facades4"><img src="views/focus.png?v=facades4" width="1280" height="720" alt="靠近窗座后隔江望向陆家嘴"></a><figcaption>窗边近景</figcaption></figure>
+  </section>
+</main></html>

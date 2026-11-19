@@ -1,0 +1,57 @@
+{
+  "status": "USER_REQUESTED_ROTATION_PENDING_VISUAL_CONFIRMATION",
+  "image_px": [
+    1672,
+    941
+  ],
+  "aspect_ratio": 1.7768331562167907,
+  "world_position_xyz_m": [
+    1.5759432685140908,
+    4.974490806465319,
+    1.8667870196726595
+  ],
+  "world_target_xyz_m": [
+    2.4799094390388046,
+    1.247962982520709,
+    1.2025274131258517
+  ],
+  "world_up_hint_xyz": [
+    0,
+    0,
+    1
+  ],
+  "camera_up_xyz": [
+    0.040237352390118414,
+    -0.16587524857993674,
+    0.985325508337817
+  ],
+  "focal_mm": 22.26190472594989,
+  "sensor_width_mm": 36.0,
+  "sensor_height_mm": 20.260765550239235,
+  "centered_hfov_deg": 77.91496938726681,
+  "centered_vfov_deg": 48.936256349533764,
+  "offset_px_from_center_right_down": [
+    0.0,
+    -30.55349188543525
+  ],
+  "offset_fraction_of_width_height_right_down": [
+    0.0,
+    -0.03246917309823087
+  ],
+  "principal_point_px_from_top_left": [
+    836.0,
+    439.9465081145647
+  ],
+  "near_m": 0.055,
+  "projection": "pixel = focal_px * camera_xy / camera_z + principal_point; focal_px = width * focal_mm / 36",
+  "camera_axes": "X right, Y down, Z forward; world +Z up",
+  "source_camera": "evidence/camera-before-ARROW-BASE-V1.json",
+  "note": "User requested slight rotation toward bookcase on 2026-11-14. World Z yaw -1 degree; eye, pitch, focal length, off-axis offset and 1672x941 unchanged. No translation. Exact result pending user visual confirmation.",
+  "camera_translation_from_push020_xyz_m": [
+    -0.45,
+    -0.2,
+    0
+  ],
+  "camera_id": "SHELF-YAW-001-V1",
+  "yaw_from_ARROW_BASE_V1_deg": -1
+}
