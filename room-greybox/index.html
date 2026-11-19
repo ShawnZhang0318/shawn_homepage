@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#071322" />
+    <title>个人数字档案室 · Three.js 灰盒</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "../node_modules/three/build/three.module.js",
+          "three/addons/": "../node_modules/three/examples/jsm/"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <div class="brand-block">
+          <div class="eyebrow">ROOM STUDY · G1 GREYBOX</div>
+          <h1>个人数字档案室</h1>
+        </div>
+        <div class="header-meta">
+          <span class="status-dot" aria-hidden="true"></span>
+          <span>真实尺度 · 可旋转场景</span>
+          <span class="dimension-chip">6.0 × 4.8 × 2.8 m</span>
+        </div>
+      </header>
+
+      <section class="stage" aria-label="Three.js 房间灰盒预览">
+        <canvas id="scene" aria-label="可旋转的三维办公室场景"></canvas>
+
+        <div class="stage-title">
+          <span class="stage-kicker">DIRECTION B</span>
+          <strong>蓝色工程室 · 空间灰盒</strong>
+          <span class="stage-subtitle">C 轨道知识工作室显示为笔记本应用</span>
+        </div>
+
+        <nav class="camera-toolbar" aria-label="相机预设">
+          <button type="button" data-view="front" aria-pressed="true">正面</button>
+          <button type="button" data-view="side" aria-pressed="false">侧面</button>
+          <button type="button" data-view="top" aria-pressed="false">俯视</button>
+          <button type="button" data-view="reset" aria-pressed="false">重置</button>
+        </nav>
+
+        <div class="axis-legend" aria-label="坐标方向">
+          <span><b class="axis-x">X</b> 向右</span>
+          <span><b class="axis-y">Z</b> 向上</span>
+          <span><b class="axis-z">Y</b> 向前</span>
+        </div>
+
+        <aside class="object-inspector" aria-live="polite" aria-atomic="true">
+          <div class="inspector-eyebrow">对象检查</div>
+          <strong id="selection-name">点击场景对象</strong>
+          <code id="selection-id">未选择</code>
+          <p id="selection-bounds">选择对象后显示规格坐标范围。</p>
+        </aside>
+
+        <div class="loading" id="loading-state" role="status">正在构建房间灰盒…</div>
+        <div class="error-message" id="error-message" role="alert" hidden>
+          当前浏览器无法创建 WebGL 场景。可使用最新版桌面浏览器打开此预览。
+        </div>
+      </section>
+
+      <footer class="bottombar">
+        <label class="object-picker-label" for="object-picker">对象</label>
+        <select id="object-picker" aria-label="选择房间对象">
+          <option value="">浏览场景对象…</option>
+        </select>
+        <div class="instructions">
+          <span>拖动旋转</span><i aria-hidden="true"></i><span>滚轮缩放</span>
+          <i aria-hidden="true"></i><span>右键平移</span>
+        </div>
+        <span class="greybox-note">灰盒：验证尺度与遮挡，不含真实个人资料</span>
+      </footer>
+    </main>
+
+    <script type="module" src="./room.js"></script>
+  </body>
+</html>

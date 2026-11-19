@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#101622">
+  <meta name="description" content="个人数字档案室的三个视觉方向概念稿与可交互比较。">
+  <title>个人数字档案室 · 视觉方向研究</title>
+  <link rel="stylesheet" href="concepts.css?v=20261107-r7">
+  <style>
+    .world-a{background:linear-gradient(180deg,#0b2f8e 0,#083078 67%,#775336 68%,#33241e 100%)}
+    .a-wall{background:radial-gradient(ellipse at 54% 98%,rgba(236,193,132,.2),transparent 44%),linear-gradient(90deg,#06328f,#073ca8 48%,#062b78)}
+    .a-poster{background:#f2f4f7;color:#092b74}.a-poster b{color:#073ca8}
+    .world-c{background:radial-gradient(ellipse at 51% 51%,#163671 0,#0b1e46 39%,#071124 77%)}
+    .archive-modules{margin-top:14px;padding:13px 14px 15px;border:1px solid var(--line);background:linear-gradient(135deg,#18232f,#101823)}
+    .archive-heading{display:flex;justify-content:space-between;gap:12px;margin-bottom:11px;color:#b8c5cb;font:8px var(--mono);letter-spacing:.11em}
+    .archive-heading small{font:9px var(--display);letter-spacing:0;color:#8da0a9}
+    .archive-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+    .archive-cards button{display:grid;grid-template-columns:45px 1fr;grid-template-rows:auto auto;align-items:center;column-gap:10px;text-align:left;padding:10px;border:1px solid #ffffff20;background:#ffffff04;color:#e5e8e6;cursor:pointer}
+    .archive-cards button:hover{border-color:#84d2cf;background:#84d2cf0d}
+    .archive-cards b{font-size:11px;font-weight:600}.archive-cards small{margin-top:3px;color:#9eabb0;font-size:9px}
+    .module-icon{grid-row:1/3;width:45px;height:42px;display:grid;place-items:center;padding:4px;border:1px solid #ffffff30;font:7px/1.2 var(--mono);letter-spacing:.05em;text-align:center}
+    .icon-hobby{border-radius:4px;background:linear-gradient(145deg,#1c2024,#050709);color:#efe9d7;box-shadow:inset 0 0 0 2px #aeb2a1}.icon-work{background:linear-gradient(135deg,#e0d5b8,#a18b67);color:#24221e}.icon-card{background:linear-gradient(135deg,#e9e5d8,#b3c4c0);color:#18212a}.icon-cv{background:linear-gradient(145deg,#f0ece2,#b6bec1);color:#25323a}
+    .selected-composition{display:flex;align-items:center;gap:11px;margin:18px 0 0;padding:12px 15px;border:1px solid #78a9e34d;background:linear-gradient(100deg,#153a68ad,#17232db8);color:#dce7e9}
+    .selected-composition strong{color:#fff;font-size:12px;letter-spacing:.04em}.selected-composition p{margin:2px 0 0;color:#abbcc3;font-size:11px;line-height:1.5}.selected-composition .selection-mark{flex:none;display:grid;place-items:center;width:30px;height:30px;border:1px solid #8fc3ef7a;border-radius:50%;color:#d9edff;font:10px var(--mono)}
+    .b-atlas-callout{display:grid;grid-template-columns:minmax(150px,220px) 1fr;align-items:center;gap:22px;margin:14px 0 0;padding:15px 18px;border:1px solid #72a8dd42;background:linear-gradient(112deg,#0d1d30,#141b25 72%,#18202a);color:#e9eff0}
+    body[data-concept="a"] .b-atlas-callout,body[data-concept="c"] .b-atlas-callout{display:none}
+    .atlas-device{padding:7px 12px 0}.atlas-laptop-screen{position:relative;aspect-ratio:1.7;border:5px solid #323d4b;border-bottom-width:7px;border-radius:7px 7px 3px 3px;overflow:hidden;background:radial-gradient(ellipse at center,#19345c,#07101d 76%);box-shadow:0 0 24px #4699c322,inset 0 0 18px #040910;display:flex;align-items:center;justify-content:center}
+    .atlas-laptop-screen>small{position:absolute;left:8px;top:6px;color:#a9c6da;font:6px var(--mono);letter-spacing:.08em}.atlas-orbit-preview{position:relative;width:66px;height:45px;border:1px solid #7ec6e26b;border-radius:50%;transform:rotate(-18deg);box-shadow:0 0 12px #51b8e222}.atlas-orbit-preview:before,.atlas-orbit-preview:after{content:"";position:absolute;inset:6px -9px;border:1px solid #dfc6845c;border-radius:50%;transform:rotate(35deg)}.atlas-orbit-preview:after{inset:-7px 9px;border-color:#8ad4d36b;transform:rotate(-46deg)}.atlas-orbit-preview i,.atlas-orbit-preview b{position:absolute;z-index:1;width:7px;height:7px;border-radius:50%;background:#b8e8e8;box-shadow:0 0 8px #8de4e5}.atlas-orbit-preview i{left:9px;top:7px}.atlas-orbit-preview b{right:8px;bottom:8px;background:#e9c889;box-shadow:0 0 8px #e9c889}.atlas-laptop-base{height:6px;margin:0 -2px;background:linear-gradient(180deg,#84919a,#46515d 56%,#242c34);clip-path:polygon(4% 0,96% 0,100% 100%,0 100%);border-radius:0 0 5px 5px}
+    .atlas-callout-copy>small{display:block;color:#8bb9d3;font:8px var(--mono);letter-spacing:.12em}.atlas-callout-copy strong{display:block;margin-top:5px;font-size:13px}.atlas-callout-copy p{margin:6px 0;color:#b5c1c8;font-size:11px;line-height:1.65}.atlas-callout-copy em{color:#7f969e;font-size:9px;font-style:normal}
+    @media(max-width:600px){.b-atlas-callout{grid-template-columns:1fr;gap:7px;margin-top:10px;padding:12px}.atlas-device{width:180px;max-width:70%;padding-top:0}.atlas-callout-copy strong{font-size:12px}}
+    @media(max-width:600px){.archive-cards{grid-template-columns:repeat(2,1fr)}.archive-heading{flex-direction:column;gap:4px}}
+  </style>
+</head>
+<body data-concept="b">
+  <header class="masthead">
+    <a class="brand" href="#top"><span class="brand-mark">ID</span><span>PERSONAL ARCHIVE<small>ENGINEERING OFFICE · DESIGN STUDY</small></span></a>
+    <span class="issue">方向研究 <b>01—03</b> / 2026</span>
+  </header>
+
+  <main id="top" class="layout">
+    <section class="intro">
+      <p class="kicker"><span></span> THREE DIRECTIONS · EARLY CONCEPTS</p>
+      <h1>一个可以慢慢<br><em>住进去的个人主页。</em></h1>
+      <p class="intro-copy">三种视觉语言共享同一套强制房间元素与内容模块。点击方向切换概念稿，再点击物件查看带有 <code>[待提供]</code> 占位文字的内容。当前页是平面视觉研究稿，不是 3D 场景或建模审批件。</p>
+      <nav class="direction-tabs" role="tablist" aria-label="视觉方向">
+        <button class="direction-tab" role="tab" id="tab-a" aria-selected="false" aria-controls="scene" data-select="a"><span>A</span><b>蓝墙 VHS 档案室</b><small>RETRO ARCHIVE</small></button>
+        <button class="direction-tab is-active" role="tab" id="tab-b" aria-selected="true" aria-controls="scene" data-select="b"><span>B</span><b>Chelsea 蓝工程室</b><small>RETRO × AI</small></button>
+        <button class="direction-tab" role="tab" id="tab-c" aria-selected="false" aria-controls="scene" data-select="c"><span>C</span><b>轨道知识工程室</b><small>DIGITAL LAYERS</small></button>
+      </nav>
+      <aside class="selected-composition" aria-label="已确认的视觉组合">
+        <span class="selection-mark">B+C</span>
+        <div><strong>已确认组合：B 主场景 + C 笔记本应用</strong><p>空间采用 Chelsea 蓝工程办公室；知识星图作为工作站笔记本里的独立可互动界面，点击后展开探索。C 方向页仍用于比较视觉语言，不代表第二个实体房间。</p></div>
+      </aside>
+    </section>
+
+    <section class="showcase" aria-label="可交互视觉原型">
+      <div class="scene-topline"><span id="scene-number">CONCEPT 02</span><span id="scene-caption">A room where ideas move between the desk and the screen.</span><span class="scene-live"><i></i> INTERACTIVE STUDY</span></div>
+      <div id="scene" class="scene" role="tabpanel" aria-labelledby="tab-b">
+        <div class="world world-a" aria-hidden="true">
+          <div class="a-wall"><div class="a-window"><div class="rain"></div><span class="cityline"></span></div><div class="a-poster">CHELSEA<br><b>BLUE</b><small>ENGINEERING OFFICE</small></div><div class="a-shelf"><i></i><i></i><i></i><i></i></div></div>
+          <div class="a-plant"><i></i><i></i><i></i><i></i><b></b></div>
+          <div class="a-lamp"><i></i><b></b><span></span></div>
+          <div class="a-tv"><div class="tv-case"><div class="tv-screen"><span class="screen-label">PLAY ▶ &nbsp; CH 01</span><strong data-screen-title>CHOOSE A TAPE</strong><small data-screen-copy>One object. One story.</small><span class="scanlines"></span></div><div class="tv-buttons"><i></i><i></i><i></i><i></i><b>VHS · HI-FI</b></div></div><div class="vcr"><i></i><span></span><b>00:00:00</b></div></div>
+          <div class="a-desk"></div>
+          <div class="tape-stack" aria-label="VHS 内容磁带">
+            <button class="tape tape-one" data-module="ABOUT"><span>01</span><b>ABOUT</b></button><button class="tape tape-two" data-module="RESEARCH"><span>02</span><b>RESEARCH</b></button><button class="tape tape-three" data-module="PROJECTS"><span>03</span><b>PROJECTS</b></button><button class="tape tape-four" data-module="PAPERS"><span>04</span><b>PAPERS</b></button>
+          </div>
+          <span class="a-sticker">PROPERTY OF<br>Y. ZHANG</span>
+        </div>
+        <div class="world world-b" aria-label="现有个人房间场景方向">
+          <img class="room-image" src="../assets/room-view-work.webp" alt="现有探索稿：夜色中的个人工作室，包含项目屏幕、奖项陈列和工作台">
+          <div class="b-vignette"></div>
+          <div class="b-monitor"><span class="b-monitor-top">FIELD NOTES <i>● LIVE</i></span><b data-screen-title>BUILDING THINGS THAT HELP</b><small data-screen-copy>Research · Robotics · AI</small><div class="b-meter"><i></i></div></div>
+          <button class="b-hotspot b-hotspot-one" data-module="RESEARCH"><span>01</span> RESEARCH</button>
+          <button class="b-hotspot b-hotspot-two" data-module="PROJECTS"><span>02</span> PROJECTS</button>
+          <button class="b-hotspot b-hotspot-three" data-module="WORK"><span>03</span> WORK PAPER</button>
+          <div class="b-chip"><span>ID</span><small>[NAME]<br>PERSONAL ARCHIVE</small></div>
+        </div>
+        <div class="world world-c" aria-label="原创数字空间方向">
+          <div class="c-stars"></div><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="orbit orbit-three"></div>
+          <div class="c-center"><div class="c-monogram">ID</div><strong>IDEAS IN MOTION</strong><small>PERSONAL KNOWLEDGE SYSTEM</small></div>
+          <button class="node node-about" data-module="ABOUT"><i>01</i><b>ABOUT</b><small>WHO I AM</small></button>
+          <button class="node node-research" data-module="RESEARCH"><i>02</i><b>RESEARCH</b><small>QUESTIONS</small></button>
+          <button class="node node-papers" data-module="PAPERS"><i>03</i><b>PAPERS</b><small>WRITING</small></button>
+          <button class="node node-projects" data-module="PROJECTS"><i>04</i><b>PROJECTS</b><small>MAKING</small></button>
+          <button class="node node-experience" data-module="WORK"><i>05</i><b>WORK</b><small>FIELD LOG</small></button>
+          <button class="node node-skills" data-module="SKILLS"><i>06</i><b>SKILLS</b><small>TOOLKIT</small></button>
+          <span class="c-coordinate">PERSONAL ARCHIVE · DETAILS [待提供]</span>
+        </div>
+      <div class="scene-overlay" aria-live="polite"><span class="overlay-index" id="module-index">00</span><div><small id="module-label">SELECT AN OBJECT</small><strong id="module-title">让内容成为空间的一部分</strong><p id="module-copy">B 是已选房间方向。笔记本上的知识星图应用以内容 ID 打开研究、论文、项目与技能模块；点击磁带、屏幕热点或轨道节点可查看概念交互。</p></div><button type="button" id="clear-module" aria-label="关闭内容预览">×</button></div>
+        <div class="scene-hint"><span>↗</span> 点击场景物件，切换内容预览</div>
+      </div>
+      <aside class="b-atlas-callout" aria-label="B 房间中的笔记本知识星图屏幕放大示意">
+        <div class="atlas-device" aria-hidden="true"><div class="atlas-laptop-screen"><small>KNOWLEDGE ATLAS · C</small><div class="atlas-orbit-preview"><i></i><b></b></div></div><div class="atlas-laptop-base"></div></div>
+        <div class="atlas-callout-copy"><small>01 · WORKSTATION NOTEBOOK</small><strong>笔记本运行 C：互动知识星图</strong><p>点击实体笔记本屏幕展开全屏探索。节点通过内容 ID 打开独立研究、论文、项目和技能记录。</p><em>屏幕 UI 放大示意 · 属于 B 房间，不是第二个房间</em></div>
+      </aside>
+      <div class="concept-meta"><div><span class="meta-label">设计语气</span><strong id="meta-tone">Klein Blue 与白色为主，金属与木材调和</strong></div><div><span class="meta-label">核心入口</span><strong id="meta-entry">场景热点 + 可扩展资料面板</strong></div><div><span class="meta-label">适合展示</span><strong id="meta-fit">工程工作站、机器人、奖柜与个人档案</strong></div></div>
+      <div class="archive-modules"><div class="archive-heading"><span>INDEPENDENT DATA MODULES</span><small>可单独替换内容 · 不重建房间</small></div><div class="archive-cards"><button data-module="HOBBY"><i class="module-icon icon-hobby">HOBBY</i><b>球星卡册</b><small>[卡片内容待提供]</small></button><button data-module="WORK"><i class="module-icon icon-work">WORK</i><b>经历纸张</b><small>[工作经历待提供]</small></button><button data-module="BUSINESS_CARD"><i class="module-icon icon-card">CARD</i><b>个人名片</b><small>[个人资料待提供]</small></button><button data-module="CV"><i class="module-icon icon-cv">CV · 中 / EN / 繁</i><b>档案袋</b><small>[三语简历待提供]</small></button></div></div>
+    </section>
+
+    <section class="comparison" aria-label="方案比较">
+      <div class="section-heading"><p class="kicker">DECISION FRAMEWORK</p><h2>先确定空间语言，再验证实际布局。</h2><p>所有方向都必须保留十项强制实体和独立内容模块。眼前概念稿不替代完整空间图、真实 3D 灰盒或 CEO 审批。</p></div>
+      <div class="comparison-grid">
+        <article><span class="compare-letter">A</span><h3>蓝墙 VHS 档案室</h3><p>Chelsea 蓝工程办公室里融入 CRT、磁带与手写记录。十项实体保持齐全，复古媒介形成主叙事。</p><dl><div><dt>视觉</dt><dd>暖光与蓝墙形成对比；需避免照搬参考站细节</dd></div><div><dt>交互</dt><dd>实体入口清晰；卡册、纸张和档案袋各自独立</dd></div><div><dt>难度 / 性能</dt><dd>中高 / 中高；重点控制微小贴纸和近景细节</dd></div><div><dt>扩展</dt><dd>适合经历与收藏；长论文通过独立面板阅读</dd></div></dl></article>
+        <article class="recommended"><span class="compare-letter">B</span><span class="recommend-tag">建议优先做空间验证</span><h3>Chelsea 蓝 AI 工程室</h3><p>以 Klein Blue 和白色为主，工作站、机械臂与展示柜构成真实工程空间；实体档案承担个人故事。</p><dl><div><dt>视觉</dt><dd>贴合蓝白球迷气质与工程身份，兼顾工业感和生活感</dd></div><div><dt>交互</dt><dd>场景物件作目录；内容管理器独立于 3D 渲染系统</dd></div><div><dt>难度 / 性能</dt><dd>中 / 中；场景可分批加载并用贴图优化窗外</dd></div><div><dt>扩展</dt><dd>四个档案模块可长期增补而不重建房间</dd></div></dl></article>
+        <article><span class="compare-letter">C</span><h3>数字轨道工程室</h3><p>保留 Chelsea 蓝实体工程办公室，用轨道、节点和数据图层增加原创的知识网络感。</p><dl><div><dt>视觉</dt><dd>识别度高；叠加层需克制，不能遮挡物件和阅读</dd></div><div><dt>交互</dt><dd>空间导航更自由；提供定位和传统栏目入口</dd></div><div><dt>难度 / 性能</dt><dd>中高 / 中；控制屏幕动画、透明层和绘制负担</dd></div><div><dt>扩展</dt><dd>适合展示研究、论文、项目间的关系</dd></div></dl></article>
+      </div>
+    </section>
+    <footer class="footer"><span>CONCEPT STUDY · 06 NOV 2026</span><span>Flat visual studies only · layout approval and 3D greybox are separate gates</span><a href="../../docs/room-design-preview.html">打开空间设计包 ↗</a></footer>
+  </main>
+  <script src="concepts.js?v=20261107-r7"></script>
+</body>
+</html>
