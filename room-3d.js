@@ -1,5 +1,5 @@
-import * as THREE from "./node_modules/three/build/three.module.js";
-import { RoundedBoxGeometry } from "./node_modules/three/examples/jsm/geometries/RoundedBoxGeometry.js";
+import * as THREE from "./vendor/three/build/three.module.js";
+import { RoundedBoxGeometry } from "./vendor/three/examples/jsm/geometries/RoundedBoxGeometry.js";
 
 const canvas = document.getElementById("room3dCanvas");
 const room = document.getElementById("roomScene");
