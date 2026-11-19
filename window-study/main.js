@@ -19,7 +19,7 @@ const raised = { position: new THREE.Vector3(), quaternion: new THREE.Quaternion
 const toYUp = a => new THREE.Vector3(-a[0], a[2], -a[1]);
 let cameraSource, readyAt, lastPointer = null, eyeCamera;
 let roomMeshes = [];
-let updateWater;
+let updateWater, aliveCity;
 const restHint = '按住拖动转头 · 滚轮远近 · 点击电脑、窗边或书柜靠近';
 function syncViewControls() {
   const enabled = state === 'rest';
@@ -155,6 +155,7 @@ function tick(now) {
   if (!renderer || document.hidden) return;
   eyeCamera?.update(now);
   updateWater?.(now);
+  aliveCity?.frame(now);
   if (motion) {
     const t = motion.duration ? Math.min(1, (now - motion.start) / motion.duration) : 1;
     const ease = t * t * (3 - 2 * t);
@@ -219,6 +220,16 @@ async function init() {
   if (location.pathname.startsWith('/arc-study/')) {
     const {installArc} = await import('./arc-study/arc.js');
     await installArc(scene, gltf.scene, toYUp, renderer.capabilities.getMaxAnisotropy());
+  } else if (!/\/(window-look|arc-study)\//.test(location.pathname) && new URLSearchParams(location.search).get('exterior') !== 'facades') {
+    const {installAliveCity} = await import('./alive-city/alive.js?v=1');
+    aliveCity = await installAliveCity({scene, room: gltf.scene, camera, renderer, toWorld: toYUp, reduced});
+    const rain = $('rain');
+    rain.hidden = false;
+    rain.onclick = () => {
+      aliveCity.setRain(!aliveCity.raining);
+      rain.setAttribute('aria-pressed', String(aliveCity.raining));
+      rain.textContent = aliveCity.raining ? '下雨' : '雨停';
+    };
   } else {
     updateWater=finishWater(gltf.scene,reduced);
   }
