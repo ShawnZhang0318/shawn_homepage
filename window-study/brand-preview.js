@@ -10,7 +10,8 @@ const crops = {
 };
 
 function showBrand() {
-  const crop = crops[new URLSearchParams(location.search).get('brand')];
+  const brand = new URLSearchParams(location.search).get('brand') || 'angular2';
+  const crop = crops[brand];
   if (!crop) {
     link.classList.remove('has-brand-art');
     link.textContent = 'Yitong Zhang';
