@@ -1,0 +1,31 @@
+#laptop-links { width: 900px; height: 620px; }
+.connect-content { flex: 1; min-height: 0; padding: 36px 48px 40px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #786044 #181614; }
+.connect-status { display: flex; align-items: center; gap: 12px; margin: 0; color: var(--screen-muted); font: 11px/16px var(--screen-mono); letter-spacing: .055em; }
+.connect-status > span { height: 6px; width: 6px; border-radius: 50%; background: var(--screen-gold); flex: 0 0 auto; animation: connect-breathe 3s ease-in-out infinite; }
+@keyframes connect-breathe { 0%,100% { opacity: .55; box-shadow: 0 0 0 0 rgba(229,169,92,0); } 50% { opacity: 1; box-shadow: 0 0 8px 2px rgba(229,169,92,.16); } }
+.connect-heading { margin: 26px 0 20px; }
+.connect-heading h1 { margin: 0; font-size: 40px; line-height: 1.2; font-weight: 650; letter-spacing: -.035em; }
+.connect-heading > p { margin: 12px 0 0; font-size: 17px; line-height: 1.5; color: var(--screen-muted); }
+.profile-list { display: grid; gap: 18px; }
+.profile-link { display: grid; grid-template-columns: 30px minmax(0,1fr) 30px; align-items: start; column-gap: 18px; row-gap: 14px; padding: 22px 24px 18px; min-height: 138px; background: rgba(244,237,226,.04); border: 1px solid rgba(244,237,226,.14); border-radius: 8px; color: var(--screen-ink); text-decoration: none; transition: border-color .2s, background .2s; }
+.profile-link svg { margin-top: 2px; }
+.profile-text { min-width: 0; }
+.profile-link h2 { margin: 0; font-size: 26px; line-height: 1.2; font-weight: 600; letter-spacing: -.025em; }
+.profile-account { margin: 10px 0 0; color: var(--screen-muted); font-size: 15px; line-height: 1.35; overflow-wrap: anywhere; }
+.profile-arrow { color: var(--screen-gold); font-size: 29px; line-height: 1; transition: transform .2s; }
+.profile-description { grid-column: 1 / -1; margin: 0; color: var(--screen-muted); font-size: 15px; line-height: 1.5; }
+.profile-link:hover, .profile-link:focus-visible { border-color: var(--screen-gold); background: rgba(229,169,92,.055); }
+.profile-link:hover .profile-arrow, .profile-link:focus-visible .profile-arrow { transform: translate(3px,-3px); }
+@media (max-width: 700px) {
+  .connect-content { padding: 24px 20px 28px; }
+  .connect-status { font-size: 8px; gap: 8px; }
+  .connect-heading { margin: 22px 0 24px; }
+  .connect-heading h1 { font-size: 30px; }
+  .connect-heading > p { font-size: 14px; line-height: 1.6; }
+  .profile-link { grid-template-columns: 24px minmax(0,1fr) 20px; gap: 12px; padding: 20px 16px; }
+  .screen-studio .profile-link svg { width: 24px; height: 24px; }
+  .profile-link h2 { font-size: 23px; }
+  .profile-account { font-size: 12px; margin-top: 8px; }
+  .profile-description { font-size: 13px; }
+  .profile-arrow { font-size: 23px; }
+}

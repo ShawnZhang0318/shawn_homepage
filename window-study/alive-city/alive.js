@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import {addRiverBoats} from './river-boats.js';
 
 // A living night view of Lujiazui behind the bay window.
 //
@@ -106,34 +107,6 @@ vec3 beacons(vec2 px,float t){
   return add;
 }
 
-// Night cruise boats crossing the river, with their reflections.
-vec3 boat(vec3 c,vec2 px,float t,float i){
-  float yb=SHORE*PX.y+16.+i*42.;                  // waterline row; nearer boats are lower and larger
-  float L=46.+i*38., H=6.+i*5.;
-  float period=170.+i*90.;
-  float x=fract(t/period+.31+i*.43)*(PX.x+L*2.)-L;
-  if(i>.5) x=PX.x-x;
-  float dx=px.x-x, dy=yb-px.y;                    // dy>0 above the waterline
-  float taper=L*.5-max(0.,dy)*1.2;
-  if(abs(dx)<taper && dy>0. && dy<H){
-    float row=dy/H;
-    vec3 col=vec3(.004,.004,.006);
-    float hue=fract(t*.05+i*.3+dx/L*.5);
-    vec3 neon=.5+.5*cos(6.2832*(hue+vec3(0.,.33,.67)));
-    col+=step(.82,row)*neon*1.6;                                            // roof outline
-    col+=step(.38,row)*step(row,.66)*step(.35,fract(dx/3.2))*vec3(1.,.72,.38)*1.3; // cabin windows
-    col+=step(row,.18)*vec3(.9,.8,.6)*.25*step(.6,fract(dx/7.));           // deck lights
-    return col;
-  }
-  float ry=px.y-yb;                               // reflection below the hull
-  if(abs(dx)<L*.5 && ry>0. && ry<H*3.5){
-    float w=vn(vec2(dx*.25,ry*.9-t*3.));
-    float fall=(1.-ry/(H*3.5));
-    return c+vec3(1.,.7,.45)*.10*fall*fall*smoothstep(.45,.8,w)*(1.-abs(dx)/(L*.5));
-  }
-  return c;
-}
-
 void main(){
   float t=uTime;
   vec2 uv=vP; vec2 px=uv*PX;
@@ -152,7 +125,6 @@ void main(){
   float cl=fbm(vec2(uv.x*7.+t*.0035,uv.y*4.2-t*.001));
   c+=sky*smoothstep(.42,.85,cl)*vec3(.030,.016,.045)*(.55+clamp(uv.y+.3,0.,1.));
   c+=beacons(px,t);
-  if(uv.y>SHORE && uv.y<1.){ c=boat(c,px,t,0.); c=boat(c,px,t,1.); }
   // rain: a faint veil over the distance
   c=mix(c,vec3(.035,.03,.05),.07*uRain);
   gl_FragColor=vec4(c*uGain,1.);
@@ -313,6 +285,7 @@ export async function installAliveCity({ scene, room, camera, renderer, toWorld,
   city.layers.enable(1);
   room.traverse(node => { if (node.name.startsWith('SH-')) node.visible = false; });
   scene.add(city);
+  const moveBoats = addRiverBoats(scene, toWorld, U.uTime);
 
   // rain volume: from just outside the bay glass out toward the river
   const F = toWorld([.6, -.8, 0]).normalize(), S = toWorld([.8, .6, 0]).normalize();
@@ -353,6 +326,7 @@ export async function installAliveCity({ scene, room, camera, renderer, toWorld,
     frame(now) {
       const still = reduced.matches;
       U.uTime.value = still ? 42 : now * .001;
+      moveBoats();
       U.uRain.value += (rainWanted - U.uRain.value) * (still ? 1 : .03);
       rain.visible = !still && U.uRain.value > .01;
       renderer.getDrawingBufferSize(size);

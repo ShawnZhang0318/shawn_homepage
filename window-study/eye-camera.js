@@ -7,10 +7,12 @@ const smooth = t => t*t*(3-2*t);
 // Local interaction tuning, not an anatomical measurement or a claimed reference-site limit.
 export const EYE_LIMITS = { yaw: 70, pitchUp: 25, pitchDown: 30, zoomIn: 2.4, zoomOut: .5, clearance: .22 };
 export const FOCUS_VIEWS = [
+  { id: 'ROBOTICS', label: '机器人工作台', eye: [3.41, 1.33, 1.27], target: [4.04, .47, .91] },
   { id: 'WINDOW', label: '窗边', eye: [4.8, 1.95, 1.60], target: [5.78, .10, 1.35], clickPoint: [5.8, -.25, 1.65],
     groups: ['W1', 'W2', 'W3', 'FA', 'FB', 'FC', 'FD'], prefixes: ['S01', 'S02'] },
+  { id: 'M01', label: '小电视', eye: [1.45, .42, 1.70], target: [.392, .42, 1.70], clickPoint: [.392, .42, 1.797] },
   { id: 'BOOKCASE', label: '书柜', eye: [2.1, 2.25, 1.75], target: [.30, 1.30, 1.55], clickPoint: [.45, 1.45, 1.90],
-    groups: ['A01', 'A02', 'A03', 'A04', 'A05', 'M01', 'M02', 'M03', 'M04', 'M05'],
+    groups: ['A01', 'A02', 'A03', 'A04', 'A05', 'M02', 'M03', 'M04', 'M05'],
     prefixes: ['A01-', 'A02-', 'A03-', 'BOOK-', 'AWARD-', 'M03-'] },
   { id: 'E05', label: '桌面电脑', eye: [2.10, 1.55, 1.65], target: [2.10, .36, 1.04] },
   { id: 'E06', label: '笔记本电脑', eye: [2.93, 1.40, 1.60], target: [2.93, .32, .92] },
@@ -33,13 +35,60 @@ export class EyeCamera {
     this.drag = null; this.suppressClick = false; this.lastTime = null; this.blocked = false;
     this.ray = new THREE.Raycaster();
     this.sideOffset=0;
+    // The marked verticals on the walls beside the trophy case and floor lamp.
+    this.leftWallMark = toWorld([0, 3.08, 0]);
+    this.rightWallMark = toWorld([6.22, 1.84, 0]);
+    this.lastSafeEye = camera.position.clone();
+    this.lastSafePitch = this.pitch;
     this.wire();
+  }
+  wallRange(pitch) {
+    const eye = this.camera.position;
+    const halfWidth = 1 / this.camera.projectionMatrix.elements[0];
+    const slope = halfWidth * Math.cos(pitch);
+    // At a pitched view the top and bottom of a vertical line project to
+    // different screen Xs. Keep even the nearer screen edge of the line out.
+    const heightTerm = Math.max(-eye.y * Math.sin(pitch), (2.8 - eye.y) * Math.sin(pitch));
+    const edge = (mark, side) => {
+      const dx = mark.x - eye.x, dz = mark.z - eye.z;
+      const distance = Math.max(.001, Math.hypot(dx, dz));
+      const margin = Math.atan(slope) + Math.asin(clamp(
+        halfWidth * heightTerm / (distance * Math.hypot(1, slope)), 0, 1));
+      // +Z faces the front wall; a positive bearing turns toward the cabinet.
+      let bearing = Math.atan2(dx, dz);
+      if (dz < 0 && bearing * side < 0) bearing += side * 2 * Math.PI;
+      return bearing - side * margin;
+    };
+    return [edge(this.rightWallMark, -1), edge(this.leftWallMark, 1)];
+  }
+  fitView(yaw, pitch) {
+    let [right, left] = this.wallRange(pitch);
+    if (right > left) {
+      pitch = this.lastSafePitch;
+      [right, left] = this.wallRange(pitch);
+      if (right > left) {
+        this.camera.position.copy(this.lastSafeEye);
+        this.destination.copy(this.lastSafeEye);
+        [right, left] = this.wallRange(pitch);
+      }
+    }
+    const bearing = wrap(yaw - Math.PI);
+    this.pitch = pitch;
+    this.yaw = yaw + (clamp(bearing, right, left) - bearing);
+    this.lastSafeEye.copy(this.camera.position);
+    this.lastSafePitch = pitch;
+    this.camera.quaternion.setFromEuler(this.euler.set(pitch, this.yaw, 0, 'YXZ'));
   }
   wire() {
     this.canvas.addEventListener('pointerdown', e => {
       if (!this.enabled || !e.isPrimary || e.button !== 0) return;
       this.stop(); this.suppressClick = false;
       this.drag = { id: e.pointerId, x: e.clientX, y: e.clientY, yaw: this.wantedYaw, pitch: this.wantedPitch, moved: false };
+      if (this.focusId === 'WINDOW') {
+        // Pivot a short distance behind the eyes when looking along the glass.
+        this.drag.eye = this.camera.position.clone();
+        this.drag.pivot = this.drag.eye.clone().addScaledVector(this.camera.getWorldDirection(new THREE.Vector3()), -.10);
+      }
       this.canvas.setPointerCapture(e.pointerId);
     });
     this.canvas.addEventListener('pointermove', e => {
@@ -50,11 +99,21 @@ export class EyeCamera {
       this.suppressClick = true;
       const sensitivity = rad(100) / Math.max(500, this.canvas.clientWidth);
       const atWindow = this.focusId === 'WINDOW';
-      const yawLimit = rad(EYE_LIMITS.yaw);
-      this.wantedYaw = this.baseYaw + clamp(wrap(d.yaw + dx * sensitivity - this.baseYaw), -yawLimit, yawLimit);
-      this.wantedPitch = clamp(d.pitch + dy * sensitivity,
+      // Drag toward the intended gaze. Three.js positive yaw looks left;
+      // positive pitch looks up, while pointer Y increases downward.
+      this.wantedPitch = clamp(d.pitch - dy * sensitivity,
         Math.max(rad(-65), this.basePitch - rad(atWindow ? 6 : EYE_LIMITS.pitchDown)),
         Math.min(rad(45), this.basePitch + rad(atWindow ? 6 : EYE_LIMITS.pitchUp)));
+      const span = rad(EYE_LIMITS.yaw);
+      const requested = clamp(d.yaw - dx * sensitivity, this.baseYaw - span, this.baseYaw + span);
+      const [right, left] = this.wallRange(this.wantedPitch);
+      const bearing = wrap(requested - Math.PI);
+      this.wantedYaw = right <= left ? requested + (clamp(bearing, right, left) - bearing) : this.yaw;
+      if (atWindow && d.pivot) {
+        const gaze = new THREE.Vector3(0, 0, -1).applyEuler(this.euler.set(this.wantedPitch, this.wantedYaw, 0, 'YXZ'));
+        this.destination.copy(this.safeMove(d.eye, d.pivot.clone().addScaledVector(gaze, .10), true));
+      }
+      d.yaw = this.wantedYaw; d.x = e.clientX;
       this.canvas.style.cursor = 'grabbing'; e.preventDefault();
     });
     const release = e => {
@@ -71,10 +130,11 @@ export class EyeCamera {
       e.preventDefault(); if (!this.enabled) return;
       this.stopFlight();
       const amount = clamp(e.deltaY * (e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? innerHeight : 1), -240, 240) * -.0018;
-      const nextZoom = this.focusId==='WINDOW' ? clamp(this.zoom+amount,-.30,.40) : clamp(this.zoom + amount, -EYE_LIMITS.zoomOut, EYE_LIMITS.zoomIn);
+      const atWindow = this.focusId === 'WINDOW';
+      const nextZoom = atWindow ? clamp(this.zoom + amount, -.30, 3.6) : clamp(this.zoom + amount, -EYE_LIMITS.zoomOut, EYE_LIMITS.zoomIn);
       const forward = this.camera.getWorldDirection(new THREE.Vector3());
       const requested = this.destination.clone().addScaledVector(forward, nextZoom - this.zoom);
-      this.destination.copy(this.safeMove(this.camera.position, requested));
+      this.destination.copy(this.safeMove(this.camera.position, requested, atWindow));
       this.zoom = nextZoom + this.destination.clone().sub(requested).dot(forward); this.changed();
     }, { passive: false });
   }
@@ -103,7 +163,7 @@ export class EyeCamera {
     // Keep the held sheet in front of a close monitor while retaining its apparent size.
     return hit ? clamp(hit.distance * .45, .12, .49) : .49;
   }
-  safeMove(from, to) {
+  safeMove(from, to, windowWheel = false) {
     const delta = to.clone().sub(from), length = delta.length();
     if (length < 1e-7) return to.clone();
     const forward = delta.normalize();
@@ -117,7 +177,10 @@ export class EyeCamera {
       const origin = from.clone().addScaledVector(right, x * .11).addScaledVector(up, y * .11);
       this.ray.set(origin, forward); this.ray.near = 0; this.ray.far = length + EYE_LIMITS.clearance;
       const hit = this.ray.intersectObjects(this.meshes, false)[0];
-      if (hit) allowed = Math.min(allowed, Math.max(0, hit.distance - EYE_LIMITS.clearance));
+      if (hit) {
+        const clearance = windowWheel && hit.object.material?.name === 'window' ? .12 : EYE_LIMITS.clearance;
+        allowed = Math.min(allowed, Math.max(0, hit.distance - clearance));
+      }
     }
     this.blocked = allowed < length - 1e-5;
     return from.clone().addScaledVector(forward, allowed);
@@ -155,7 +218,8 @@ export class EyeCamera {
       const progress = smooth(t);
       this.camera.position.lerpVectors(f.from, f.to, progress);
       this.camera.quaternion.slerpQuaternions(f.qFrom, f.qTo, progress);
-      this.euler.setFromQuaternion(this.camera.quaternion, 'YXZ'); this.yaw = this.euler.y; this.pitch = this.euler.x;
+      this.euler.setFromQuaternion(this.camera.quaternion, 'YXZ');
+      this.fitView(this.euler.y, this.euler.x);
       this.wantedYaw = this.yaw; this.wantedPitch = this.pitch;
       if (t === 1) {
         this.flight = null; this.station.copy(this.camera.position); this.destination.copy(this.camera.position);
@@ -164,12 +228,11 @@ export class EyeCamera {
       }
     } else {
       const a = this.reduced.matches ? 1 : 1 - Math.exp(-16 * dt);
-      this.yaw += wrap(this.wantedYaw - this.yaw) * a; this.pitch += (this.wantedPitch - this.pitch) * a;
-      if (Math.abs(wrap(this.wantedYaw - this.yaw)) < 1e-6) this.yaw = this.wantedYaw;
-      if (Math.abs(this.wantedPitch - this.pitch) < 1e-6) this.pitch = this.wantedPitch;
-      this.camera.quaternion.setFromEuler(this.euler.set(this.pitch, this.yaw, 0, 'YXZ'));
       this.camera.position.lerp(this.destination, a);
       if (this.camera.position.distanceTo(this.destination) < 1e-6) this.camera.position.copy(this.destination);
+      const turn = wrap(this.wantedYaw - this.yaw), tilt = this.wantedPitch - this.pitch;
+      this.fitView(this.yaw + turn * (Math.abs(turn) < 1e-6 ? 1 : a),
+        this.pitch + tilt * (Math.abs(tilt) < 1e-6 ? 1 : a));
     }
     this.camera.updateMatrixWorld();
   }

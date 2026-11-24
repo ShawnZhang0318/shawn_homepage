@@ -1,0 +1,31 @@
+@font-face { font-family: Inter; src: url('./fonts/Inter.ttf') format('truetype'); font-weight: 100 900; font-display: swap; }
+@font-face { font-family: 'JetBrains Mono'; src: url('./fonts/JetBrainsMono.ttf') format('truetype'); font-weight: 100 800; font-display: swap; }
+.screen-studio {
+  --screen-ink: #f4ede2; --screen-muted: #9c9387; --screen-gold: #e5a95c;
+  --screen-line: rgba(244,237,226,.12); --screen-mono: 'JetBrains Mono', Consolas, monospace;
+  position: fixed; left: 0; top: 0; z-index: 8; transform-origin: 0 0;
+  display: flex; flex-direction: column; overflow: hidden; border-radius: 1px;
+  background: radial-gradient(ellipse at 45% 30%, rgba(80,61,40,.08), rgba(0,0,0,.16)), #121110;
+  color: var(--screen-ink); font-family: Inter, 'Microsoft YaHei', sans-serif; text-shadow: none;
+  color-scheme: dark; -webkit-font-smoothing: antialiased;
+}
+.screen-studio:focus { outline: none; }
+.screen-studio button, .screen-studio a { -webkit-tap-highlight-color: transparent; }
+.screen-studio button { border: 0; background: none; color: inherit; font: inherit; cursor: pointer; }
+.screen-studio :is(a,button):focus-visible { outline: 2px solid var(--screen-gold); outline-offset: -2px; }
+.screen-studio svg { width: 30px; height: 30px; fill: currentColor; flex: 0 0 auto; }
+.screen-topbar { min-height: 56px; flex: 0 0 56px; display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 0 28px; border-bottom: 1px solid var(--screen-line); font: 11px var(--screen-mono); letter-spacing: .045em; }
+.screen-topbar p { margin: 0; }
+.screen-topbar .screen-app-name { color: var(--screen-ink); font-size: 12px; }
+.screen-topbar .screen-app-name span { color: var(--screen-muted); }
+.screen-studio [hidden] { display: none !important; }
+.screen-enter { animation: screen-enter .22s ease-out; }
+@keyframes screen-enter { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+@media (max-width: 700px) {
+  .screen-studio { inset: 142px 16px 160px; width: auto !important; height: auto !important; transform: none !important; }
+  .screen-topbar { padding: 14px 18px; flex: 0 0 auto; min-height: 56px; flex-wrap: wrap; gap: 12px; }
+  .screen-topbar .screen-app-name { font-size: 10px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .screen-studio *, .screen-studio *::before, .screen-studio *::after { animation: none !important; transition: none !important; }
+}

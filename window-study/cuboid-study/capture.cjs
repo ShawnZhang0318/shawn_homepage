@@ -57,9 +57,9 @@ async function capture(browser){
     await page.waitForTimeout(600);
     await sample(name);
   }
-  await look(330,930,'look-left');
-  await look(1240,40,'look-right');
-  await look(330,930,'look-centre');
+  await look(930,330,'look-left');
+  await look(40,1240,'look-right');
+  await look(930,330,'look-centre');
   for(const [key,count,name] of [['ArrowLeft',2,'left'],['ArrowRight',4,'right']]){
     for(let i=0;i<count;i++){await page.keyboard.press(key);await page.waitForTimeout(340);}
     await page.waitForTimeout(350);await sample(name);
@@ -81,7 +81,10 @@ async function capture(browser){
   }
   assert(at('look-left').yawOffsetDegrees>40 && at('look-right').yawOffsetDegrees< -40);
   assert(at('left').sideOffset<-.39 && at('right').sideOffset>.39);
-  for(const sample of samples.slice(2,5))assert.deepEqual(sample.position,at('focus').position);
+  for(const sample of samples.slice(2,5)){
+    const shift=Math.hypot(...sample.position.map((v,i)=>v-at('focus').position[i]));
+    assert(shift<.14 && (Math.abs(sample.yawOffsetDegrees)<20 || shift>.015));
+  }
   for(const key of ['position','quaternion'])assert(at('home')[key].every((v,i)=>Math.abs(v-at('return')[key][i])<1e-8));
   assert(samples.every(s=>JSON.stringify(s.box.matrix)===JSON.stringify(at('home').box.matrix)));
   console.log(samples.map(s=>[s.name,Math.round(s.box.width),Math.round(s.box.height),

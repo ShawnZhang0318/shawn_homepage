@@ -4,15 +4,62 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>上海滨江 · 夜间工作室</title>
 <link rel="icon" href="data:,">
-<link rel="stylesheet" href="style.css">
+<link rel="preload" as="image" href="./assets/study-opening.webp">
+<link rel="stylesheet" href="style.css?v=browser-pages">
+<link rel="stylesheet" href="./screen-browser.css?v=dark-studio">
+<link rel="stylesheet" href="./posts-monitor.css?v=standalone-entries">
+<link rel="stylesheet" href="./links-screen.css?v=profiles-only">
 <script type="importmap">{"imports":{"three":"./vendor/three/build/three.module.js","three/addons/":"./vendor/three/examples/jsm/"}}</script>
 <main id="stage" aria-label="现有房间中的 Work 纸张"><canvas id="scene" tabindex="0" aria-label="按住拖动转头，滚轮调整远近，点击电脑、窗边或书柜靠近；点击 Work 纸张拿起；方向键切换公司，Enter 查看，Esc 放下或返回原视角"></canvas></main>
-<div class="heading"><span>THE STUDY</span><small>陆家嘴窗景 V0.5 · <a href="./?exterior=facades">旧版立面</a> · <a href="window-look/closer/">新版窗边</a> · <a href="arc-study/">弧面旧稿</a> · <a href="review.html">看录屏</a></small></div>
-<nav class="view-controls" aria-label="房间视角和灯光"><button id="ceiling-light" aria-pressed="true" disabled>顶灯开</button><button id="rain" aria-pressed="true" hidden>下雨</button><select id="views" aria-label="靠近查看" disabled><option value="">原视角</option></select><button id="reset-view" disabled>返回原视角</button></nav>
-<div id="window-step" hidden><button id="step-left" aria-label="沿窗向左移动">← 左移</button><button id="step-right" aria-label="沿窗向右移动">右移 →</button></div>
-<div id="loading" role="status">正在载入现有房间与手写字体…</div>
-<div class="controls"><p id="hint">按住拖动转头 · 滚轮远近 · 点击电脑、窗边或书柜靠近</p><button id="pickup" disabled>拿起 Work 纸张</button><button id="putdown" hidden>放下纸张 <kbd>Esc</kbd></button></div>
+<div id="hud" lang="en" inert>
+  <header class="site-header">
+    <a class="site-name" href="./" id="home-view">Yitong Zhang</a>
+    <nav aria-label="Main navigation">
+      <button type="button" id="open-about" data-section="about" aria-expanded="false" aria-controls="about-copy" disabled><sup aria-hidden="true">01</sup><span>ABOUT</span></button>
+      <button type="button" data-section="work" aria-controls="accessible" aria-expanded="false"><sup aria-hidden="true">02</sup><span>WORK</span></button>
+      <button type="button" data-section="posts" aria-controls="monitor-posts" aria-expanded="false"><sup aria-hidden="true">03</sup><span>POSTS</span></button>
+      <button type="button" data-section="links" aria-controls="laptop-links" aria-expanded="false"><sup aria-hidden="true">04</sup><span>LINKS</span></button>
+    </nav>
+  </header>
+  <aside class="scene-console" aria-label="Scene controls">
+    <p class="hud-shortcuts">1–4 FOCUS · DRAG ORBIT · SCROLL ZOOM</p>
+    <div class="view-controls">
+      <button id="ceiling-light" type="button" aria-pressed="true" disabled><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5.5 10.5c0-2-2-2-2-5a4.5 4.5 0 0 1 9 0c0 3-2 3-2 5M5.5 11h5M6 13h4M7 15h2"/></svg><span>LIGHT ON</span></button>
+      <button id="rain" type="button" aria-pressed="true" hidden><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1S3.5 6 3.5 9a4.5 4.5 0 0 0 9 0C12.5 6 8 1 8 1Z"/></svg><span>RAIN</span></button>
+      <div class="preset-picker">
+        <button type="button" id="view-trigger" aria-haspopup="menu" aria-expanded="false" aria-controls="view-menu" disabled><span>DEFAULT VIEW</span><span aria-hidden="true">▾</span></button>
+        <div id="view-menu" role="menu" aria-label="Camera presets" hidden>
+          <button type="button" role="menuitemradio" aria-checked="true" data-preset="">DEFAULT VIEW</button>
+          <button type="button" role="menuitemradio" aria-checked="false" data-preset="E05">DESK &amp; MONITORS</button>
+          <button type="button" role="menuitemradio" aria-checked="false" data-preset="ROBOTICS">ROBOTICS LAB</button>
+          <button type="button" role="menuitemradio" aria-checked="false" data-preset="BOOKCASE">TROPHY SHELF</button>
+          <button type="button" role="menuitemradio" aria-checked="false" data-preset="WINDOW">BUND NIGHT</button>
+        </div>
+      </div>
+      <select id="views" hidden aria-label="Camera preset" disabled><option value="">DEFAULT VIEW</option></select>
+      <button id="reset-view" type="button" disabled><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 6a6 6 0 1 1 0 4M2 1v5h5"/></svg><span>RESET VIEW</span></button>
+    </div>
+  </aside>
+  <div id="window-step" hidden><button id="step-left" aria-label="Move left along window">← LEFT</button><button id="step-right" aria-label="Move right along window">RIGHT →</button></div>
+  <div class="controls"><p id="hint" class="sr-only"></p><button id="close-about" type="button" hidden>CLOSE NOTEBOOK <kbd>ESC</kbd></button><button id="close-posts" type="button" hidden>LEAVE DESK <kbd>ESC</kbd></button><button id="close-links" type="button" hidden>LEAVE LAPTOP <kbd>ESC</kbd></button><button id="close-card" type="button" hidden>PUT DOWN CARD <kbd>ESC</kbd></button><span id="card-status" role="status" hidden></span><button id="pickup" disabled>READ WORK NOTE</button><button id="putdown" hidden>PUT DOWN <kbd>ESC</kbd></button></div>
+  <section id="section-drawer" role="dialog" aria-modal="false" aria-labelledby="drawer-title" hidden>
+    <button type="button" id="close-drawer" aria-label="Close panel">CLOSE <span aria-hidden="true">×</span></button>
+    <h1 id="drawer-title"></h1>
+    <div id="drawer-body"></div>
+  </section>
+</div>
+<div class="sr-only" id="about-copy" lang="en" hidden></div>
+<div id="loading">
+  <img class="opening-still" src="./assets/study-opening.webp" alt="" fetchpriority="high" decoding="async">
+  <div class="opening-caption">
+    <p id="loading-title" lang="en">Opening the room</p>
+    <p id="loading-stage" role="status" lang="en">LOADING THE ROOM</p>
+    <div id="loading-progress" role="progressbar" aria-label="Room loading" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="loading-track" aria-hidden="true"><span id="loading-fill"></span></div><span id="loading-percent" aria-hidden="true">0%</span></div>
+    <button id="loading-retry" type="button" hidden>TRY AGAIN ↗</button>
+  </div>
+</div>
 <div id="accessible" class="sr-only" aria-live="polite"></div>
 <nav id="keyboard-items" class="sr-only" aria-label="纸上事项" hidden></nav>
-<script type="module" src="main.js?v=alive1"></script>
+<script type="module" src="main.js?v=tapered-deck"></script>
+<script type="module" src="brand-preview.js?v=4"></script>
 </html>

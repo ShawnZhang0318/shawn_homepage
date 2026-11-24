@@ -1,0 +1,15 @@
+{
+  "scope": "Local Blender prop revision only; existing room and LCD unchanged",
+  "style": "Restrained gaming laptop, satin graphite, twin hinge, narrow rear intake",
+  "bodyWidthM": 0.374,
+  "bodyDepthM": 0.263,
+  "rearIntakeDepthM": 0.0065,
+  "keyboardDepthBeforeM": 0.09724,
+  "keyboardDepthAfterM": 0.11474320113658903,
+  "deskSupportPlaneM": 0.74,
+  "evaluatedMinimumZ": 0.7399999499320984,
+  "activeLCD": "Original runtime LCD retained at its exact original vertices",
+  "visualApproval": "Pending user review",
+  "objects": 89,
+  "triangles": 52618
+}
